@@ -1,13 +1,12 @@
 # DHT Design
 
-## Swift
+## Elastic DHT - Centralized
 
 ### Data structure
 
-* **Member List** maintains a list of physical nodes and virtual nodes. 
-* **Router** maps hash slots to the hash value of physical node or virtual node. 
-* **Virtual Node** uses the same IP address as the physical node it maps to.
-* **Replicas** Preference list. Number of replicas is defined from config file.
+* **Member List** maintains a list of physical nodes. 
+* **Router** maps hash slots to the hash value of physical node. 
+* **Replicas** List of replicas.
 * **Hash Buckets** A map of hash value and number of files with RW lock. Used for mimicking file transfer. 
 
 ```plantuml
@@ -142,7 +141,7 @@ class MemberList {
         ```
 5. Request timeout
    
-    * If a node failed, try a different replica with a request to create new replica
+    * Return node failure message
 
 ### Control Client
 
@@ -181,15 +180,25 @@ class MemberList {
 
 2. Load balancing
 
-    CC requests proxy to create or remove a virtual node of a data node
+    CC requests proxy to move a hash bucket from one data node to another
 
     ```bash
 
-    dht-cc <--load-increase | --load-decrease> --node=<IP address>
+    dht-cc --load-balance --from=<IP address> --to=<IP address>
 
     ```
 
-3. System Info
+3. Node Failure
+   
+    CC specifies where the new replicas should be
+
+    ```bash
+
+    dht-cc --members-replace --node=<IP address> --with=<IP address>
+
+    ```
+   
+4. System Info
 
     CC requests to print out system info
 
@@ -198,7 +207,7 @@ class MemberList {
     dht-cc --system-info
 
     ```
-4. Turn on/off logs
+5. Turn on/off logs
 
     ```bash
 
@@ -220,17 +229,15 @@ class MemberList {
     * Updates table, and sends the updates to all nodes.
 
 3. Node failure
-
-    * Receive data node signals
-    * Mark the node as failed
-    * Schedule new replica creation and file transfer
+    
+    * Receive CC signals
+    * Replace the failed node with new replica
     * Updates table, and sends the updates to all nodes.
 
 ### Data node
 
 1. Cache routing table
-2. Read/write request   
-    * If a node failure is found with the request, signal proxy with failed node info
+2. Read/write request
 3. Table updates
     * Handle update request sent from server
 4. File transfer

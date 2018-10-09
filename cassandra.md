@@ -154,8 +154,7 @@ class MemberList {
 
     * Node removal 
 
-        CC requests the failed node (VM) to mark itself as inactive
-
+        CC requests the failed node (VM) to mark itself as inactive, and signals the neighbor to start the update
 
         ```bash
 
@@ -163,19 +162,9 @@ class MemberList {
 
         ```
 
-    * Membership updates
-
-        CC signals the proxy to start the update
-
-        ```bash
-
-        dht-cc --members-update
-
-        ```
-
 2. Load balancing
 
-    CC requests proxy to create or remove a virtual node of a data node
+    CC requests a data node to change its range
 
     ```bash
 
@@ -203,12 +192,19 @@ class MemberList {
 ### Data node
 
 1. Cache routing table
-2. Read/write request. Send read/write request to (N + 1) / 2 replicas 
+2. Node activate
+    * Activate node
+    * Start table update
+3. Load balancing
+    * Change its range in local table
+    * Start table update
+4. Read/write request. Send read/write request to (N + 1) / 2 replicas 
     * If a node failed, try to reach coordinator with a request to create new replica
     * If coordinator failed, try the direct successor of the coordinator with a request to create new replica.
-3. Table updates
-    * Handle update request sent from server
-4. File transfer
+5. Table updates
+    * Handle update request sent from neighbor
+    * Gossip update to other neighbors
+6. File transfer
     * RW-lock on each hash bucket
     * If read/write a locked bucket, returns error message
 
@@ -216,7 +212,6 @@ class MemberList {
 
 * Size of hash slots
 * Number of replicas
-* Proxy
 * Data nodes
 * Internal port. Port for internal communication between nodes
 * External port. Port for client access
@@ -224,13 +219,7 @@ class MemberList {
 
 ### Logs
 
-1. Proxy
-    * Proxy start/stop
-    * Membership updates
-    * Load balancing
-    * Node failure
-
-2. Data node
+1. Data node
     * Node activate/deactivate
     * Read/write request
     * Table updates
