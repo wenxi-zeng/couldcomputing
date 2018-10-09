@@ -264,6 +264,5 @@
 * Number of replicas
 * Proxy (if centralized case)
 * Data nodes
-* Internal port. Port for internal communication between nodes
-* External port. Port for client access
+* Port
 * Request timeout
