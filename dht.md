@@ -4,88 +4,65 @@
 
 ### Ring based - Swift and Cassandra
 
-* Node
+* Physical Node
     * id
-    * ipAddress
-    * successors - a set of IDs
+    * ip address
+    * port
+    * status
+    * virtual nodes - set of virtual nodes
+
+    | Id | IP Address | Port | Status | Virtual Nodes |
+    |-|-|-|-|-|
+    | 1 | 192.168.0.10 | 9090 | active | {15, 63} |
+    | 2 | 192.168.0.11 | 9090 | active | {31} |
+    | 3 | 192.168.0.12 | 9090 | inactive | {47} |
+
+* Virtual Node
+    * hash
+    * physical node id
+
+    | Hash | Physical Node Id |
+    |-|-|
+    | 15 | 1 |
+    | 31 | 2 | 
+    | 47 | 3 | 
+    | 63 | 1 | 
 
 * Routing table
     * epoch
-    * nodes
-
-```json
-{
-    "epoch" : 1539085313,
-    "nodes" : [ {
-        "id" : 1,        
-        "ipAddress" : "192.168.0.10",
-        "successors" : [ 20, 33 ] 
-    }, {
-        "id" : 20,        
-        "ipAddress" : "192.168.0.11",
-        "successors" : [ 23, 43 ] 
-    }, {
-        "id" : 33,        
-        "ipAddress" : "192.168.0.12",
-        "successors" : [ 43, 54 ]  
-    } ]
-}
-```
-
-| Node Id | IP Address | Successors |
-|-|-|-|
-| 1 | 192.168.0.10 | {20, 33} |
-| 20 | 192.168.0.11 | {33, 43} |
-| 33 | 192.168.0.12 | {43, 54} |
+    * virtual nodes
 
 ### Elastic DHT
 
+* Physical Node
+    * id
+    * ip address
+    * port
+    * status
+    * virtual nodes - set of virtual nodes
+
+    | Id | IP Address | Port | Status |
+    |-|-|-|-|-|
+    | 11 | 192.168.0.10 | 9090 | active |
+    | 22 | 192.168.0.11 | 9090 | active |
+    | 33 | 192.168.0.12 | 9090 | inactive |
+
 * Node
     * bucket
-    * id
-    * ipAddress
     * replicas
+
+    | Bucket | Node Id |
+    |-|-|
+    | 0 | 22, 35, 86 |
+    | 1 | 55, 33, 56 |
+    | 2 | 22, 44, 63 |
+    |..||
+    | 160 | 22, 33, 4 |
 
 * Routing table
     * epoch
     * nodes
   
-```json
-{
-    "epoch" : 1539085313,
-    "nodes" : [ {
-        "bucket" : 15,
-        "id" : 1,        
-        "ipAddress" : "192.168.0.10",
-        "successors" : [ 20, 33 ] 
-    }, {
-        "bucket" : 31,
-        "id" : 20,        
-        "ipAddress" : "192.168.0.11",
-        "successors" : [ 23, 43 ] 
-    }, {
-        "bucket" : 47,
-        "id" : 33,        
-        "ipAddress" : "192.168.0.12",
-        "successors" : [ 43, 54 ] 
-    },
-    ...
-    {
-        "bucket" : 160,
-        "id" : 1,        
-        "ipAddress" : "192.168.0.10",
-        "successors" : [ 20,33 ] 
-    } ]
-}
-```
-
-| Bucket | Node Id | IP Address | Replicas |
-|-|-|-|-|
-| 15 | 1 | 192.168.0.10 | {20, 33} |
-| 31 | 20 | 192.168.0.11 | {33, 43} |
-| 47 | 33 | 192.168.0.12 | {43, 54} |
-|..||||
-| 160 | 1 | 192.168.0.10 | {20, 33}|
 
 ### Ceph
 
