@@ -39,7 +39,6 @@
     * ip address
     * port
     * status
-    * virtual nodes - set of virtual nodes
 
     | Id | IP Address | Port | Status |
     |-|-|-|-|-|
@@ -66,41 +65,72 @@
 
 ### Ceph
 
-```json
-{
-    "epoch" : 1539085313,
-    "root" : {
-        "type" : "row",
-        "id" : "R01",
-        "weight" : 20,
-        "children" : [ {
-            "type" : "cabinet",
-            "id" : "C01",
-            "weight" : 10,
-            "children" : [ {
-                "type" : "disk",
-                "id" : "D01",
-                "weight" : 1,
-                "children": [],
-                "ipAddress": "192.168.0.10"
-            } ]
-        } ]
-    }
-}
-```
+* Physical Node
+    * id
+    * ip address
+    * port
+    * status
 
-* Node
-    * type - row, cabinet, or disk
-    * id 
+    | Id | IP Address | Port | Status |
+    |-|-|-|-|-|
+    | N11 | 192.168.0.10 | 9090 | active |
+    | N22 | 192.168.0.11 | 9090 | active |
+    | N33 | 192.168.0.12 | 9090 | inactive |
+    | N44 | 192.168.0.12 | 9091 | active |
+
+* Cluster
+    * id
     * weight
-    * children - set of nodes
+    * sub-clusters
+    * status
 
-* PhysicNode - subclass of Node
-    * ipAddress
+    | Id | Weight | Sub-clusters | Status|
+    |-|-|-|-|
+    | C00 | 3.8 | {C01, C02} | active |
+    | C01 | 2.0 | {C03, C04} | active |
+    | C02 | 1.8 | {C5, C06} | active |
+    | C03 | 0.9 | {N11} | active |
+    | C04 | 1.1 | {N22} | active |
+    | C05 | 1.0 | {N33} | active |
+    | C06 | 0.8 | {N44} | active |
+    |...|...|...|...|
 
 * Map
     * epoch
-    * root - root node
+    * root - root cluster
+
+
+```plantuml
+@startuml
+rectangle "C01|C02" as C0
+rectangle "C03|C04" as C1
+rectangle "C05|C06" as C2
+node N11
+node N22
+node N33
+node N44
+
+C0 -- C1
+C0 -- C2
+C1 -- N11
+C1 -- N22
+C2 -- N33
+C2 -- N44
+@enduml
+```
+
+* Placement group
+    * hash
+    * id
+
+    | Bucket | Group Id |
+    |-|-|
+    | 0 | PG01 |
+    | 1 | PG02 |
+    | 2 | PG03 |
+    |..||
+    | 160 | PG160 |
+
 
 ## APIs
 
@@ -167,6 +197,7 @@
 1. Read
 
     * Input:
+        * epoch
         * filename
     * Output:
         * message [file found | not found | no response]
@@ -174,6 +205,7 @@
 2. Write
 
     * Input:
+        * epoch
         * filename
     * Output:
         * message [success | failed | no response ]
@@ -243,3 +275,8 @@
 * Data nodes
 * Port
 * Request timeout
+
+Additional properties for Ceph
+* Number of children in a cluster
+* Enable placement group
+* Node initial weight
