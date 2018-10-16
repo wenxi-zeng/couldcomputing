@@ -12,7 +12,7 @@
     * virtual nodes - set of virtual nodes
 
     | Id | IP Address | Port | Status | Virtual Nodes |
-    |-|-|-|-|-|
+    |-|-|-|-|
     | 1 | 192.168.0.10 | 9090 | active | {15, 63} |
     | 2 | 192.168.0.11 | 9090 | active | {31} |
     | 3 | 192.168.0.12 | 9090 | inactive | {47} |
@@ -41,7 +41,7 @@
     * status
 
     | Id | IP Address | Port | Status |
-    |-|-|-|-|-|
+    |-|-|-|-|
     | 11 | 192.168.0.10 | 9090 | active |
     | 22 | 192.168.0.11 | 9090 | active |
     | 33 | 192.168.0.12 | 9090 | inactive |
@@ -72,7 +72,7 @@
     * status
 
     | Id | IP Address | Port | Status |
-    |-|-|-|-|-|
+    |-|-|-|-|
     | N11 | 192.168.0.10 | 9090 | active |
     | N22 | 192.168.0.11 | 9090 | active |
     | N33 | 192.168.0.12 | 9090 | inactive |
