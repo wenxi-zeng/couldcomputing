@@ -12,7 +12,7 @@
     * virtual nodes - set of virtual nodes
 
     | Id | IP Address | Port | Status | Virtual Nodes |
-    |-|-|-|-|
+    |-|-|-|-|-|
     | 1 | 192.168.0.10 | 9090 | active | {15, 63} |
     | 2 | 192.168.0.11 | 9090 | active | {31} |
     | 3 | 192.168.0.12 | 9090 | inactive | {47} |
